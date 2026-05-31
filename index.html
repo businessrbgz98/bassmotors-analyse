@@ -328,14 +328,16 @@
   }
 
   // ---- HELPERS ----
-  function buildScoutUrl(merk, model, jaar, km, brandstof, transmissie) {
-    const jaarMin = Math.max(parseInt(jaar)-1, 2000), jaarMax = parseInt(jaar)+1;
-    const kmMax = Math.round(parseInt(km)*1.3);
+  function buildScoutUrl(merk, model, jaar, km, brandstof, transmissie, uitvoering) {
+    const jaarMin = parseInt(jaar) - 1;          // 1 jaar ouder
+    const jaarMax = parseInt(jaar) + 1;
+    const kmMax = parseInt(km) + 20000;           // max +20.000 km
     const merkSlug = encodeURIComponent(merk.toLowerCase().replace(/\s+/g,'-'));
     const modelSlug = encodeURIComponent(model.toLowerCase().replace(/\s+/g,'-'));
     let url = `https://www.autoscout24.be/nl/lst/${merkSlug}/${modelSlug}?fregfrom=${jaarMin}&fregto=${jaarMax}&kmto=${kmMax}&cy=B&atype=C`;
     if (brandstof) url += `&fuel=${brandstof}`;
     if (transmissie) url += `&gear=${transmissie}`;
+    if (uitvoering) url += `&search=${encodeURIComponent(uitvoering)}`;
     return url + '&sort=price&desc=0&ustate=N%2CU';
   }
   function eur(val) { return '€' + Math.round(val).toLocaleString('nl-BE'); }
@@ -385,7 +387,7 @@
     errBox.classList.remove('active');
     if (!merk||!model||!jaar||!km||isNaN(aankoopprijs)) { errBox.textContent='⚠️ Vul minstens merk, model, bouwjaar, km-stand en aankoopprijs in.'; errBox.classList.add('active'); return; }
 
-    const scoutUrl = buildScoutUrl(merk, model, jaar, km, brandstof, transmissie);
+    const scoutUrl = buildScoutUrl(merk, model, jaar, km, brandstof, transmissie, uitvoering);
     document.getElementById('a-scoutUrl').textContent = scoutUrl;
     document.getElementById('a-scoutLink').href = scoutUrl;
     document.getElementById('a-scoutLink').style.display = 'flex';
@@ -395,21 +397,28 @@
 
     const voertuig = `${merk} ${model}${uitvoering?' '+uitvoering:''}, bouwjaar ${jaar}, ${parseInt(km).toLocaleString('nl-BE')} km${brandstof?', brandstof: '+brandstof:''}${transmissie?', transmissie: '+transmissie:''}`;
 
-    const prompt = `Je bent een expert Belgische automarkt analist. Autohandelaar Bass Motors vraagt een marktanalyse.
+    const prompt = `Je bent een expert Belgische automarkt analist. Autohandelaar Bass Motors vraagt een NAUWKEURIGE marktanalyse.
 
 VOERTUIG: ${voertuig}
 AANKOOPPRIJS HANDELAAR: €${aankoopprijs.toLocaleString('nl-BE')}
 GEWENSTE MARGE: ${marge}%
 
+BELANGRIJK — baseer je ALLEEN op:
+- Zelfde merk + model${uitvoering ? ' + uitvoering: ' + uitvoering : ''}
+- Bouwjaar ${parseInt(jaar)-1} t/m ${parseInt(jaar)+1}
+- Max ${(parseInt(km)+20000).toLocaleString('nl-BE')} km
+- Belgische markt (AutoScout24.be, 2dehands.be)
+Wees zo precies mogelijk. Geen algemene schattingen.
+
 Analyseer in het NEDERLANDS:
-1. MARKTWAARDE: realistische range op Belgische tweedehandsmarkt (min, gemiddeld, max)
-2. MARGE ANALYSE: is aankoopprijs interessant? Geschatte winst? Aanbevolen verkoopprijs (na kosten ~€650)?
+1. MARKTWAARDE: precieze prijsrange voor dit exacte voertuig (min, gemiddeld, max)
+2. MARGE ANALYSE: is €${aankoopprijs.toLocaleString('nl-BE')} een goede prijs? Winst na kosten (~€650)? Aanbevolen verkoopprijs?
 3. VERDICT: INTERESSANT / MARGINAAL / NIET INTERESSANT
-4. MARKTINZICHTEN: 2-3 tips (vraag/aanbod, seizoen, kopers)
+4. MARKTINZICHTEN: 2-3 concrete tips (vraag/aanbod, uitvoering, typische kopers)
 
 Begin met ENKEL dit JSON-blok:
 {"marktMin":GETAL,"marktGem":GETAL,"marktMax":GETAL,"aanbevolen":GETAL,"verdict":"GO|MAYBE|NOGO"}
-Daarna de analyse als tekst.`;
+Daarna de analyse als tekst.`
 
     try {
       const fullText = await callAI(prompt);
@@ -465,7 +474,7 @@ Daarna de analyse als tekst.`;
     errBox.classList.remove('active');
     if (!merk||!model||!jaar||!km) { errBox.textContent='⚠️ Vul minstens merk, model, bouwjaar en km-stand in.'; errBox.classList.add('active'); return; }
 
-    const scoutUrl = buildScoutUrl(merk, model, jaar, km, brandstof, transmissie);
+    const scoutUrl = buildScoutUrl(merk, model, jaar, km, brandstof, transmissie, uitvoering);
     document.getElementById('i-scoutUrl').textContent = scoutUrl;
     document.getElementById('i-scoutLink').href = scoutUrl;
     document.getElementById('i-scoutLink').style.display = 'flex';
@@ -476,29 +485,33 @@ Daarna de analyse als tekst.`;
     const staatLabels = {goed:'Goed (weinig gebreken, nette staat)', gemiddeld:'Gemiddeld (normale slijtage, paar kleine defecten)', slecht:'Slecht (zichtbare schade, mechanische problemen)'};
     const voertuig = `${merk} ${model}${uitvoering?' '+uitvoering:''}, bouwjaar ${jaar}, ${parseInt(km).toLocaleString('nl-BE')} km${brandstof?', brandstof: '+brandstof:''}${transmissie?', transmissie: '+transmissie:''}`;
 
-    const prompt = `Je bent een expert Belgische automarkt analist. Autohandelaar Bass Motors wil een inruilwagen overnemen van een klant.
+    const prompt = `Je bent een expert Belgische automarkt analist. Autohandelaar Bass Motors wil een inruilwagen overnemen.
 
 INRUILWAGEN: ${voertuig}
-STAAT VAN DE WAGEN: ${staatLabels[staat]}
-GEWENSTE WINSTMARGE BIJ DOORVERKOOP: ${marge}%
+STAAT: ${staatLabels[staat]}
+GEWENSTE MARGE: ${marge}%
 
-De handelaar wil weten hoeveel hij maximaal kan bieden als inruilprijs zodat hij:
-1. De klant kan overtuigen (eerlijk en marktconform bod)
-2. De wagen nog rendabel kan doorverkopen met ${marge}% marge
+BELANGRIJK — baseer je ALLEEN op:
+- Zelfde merk + model${uitvoering ? ' + uitvoering: ' + uitvoering : ''}
+- Bouwjaar ${parseInt(jaar)-1} t/m ${parseInt(jaar)+1}
+- Max ${(parseInt(km)+20000).toLocaleString('nl-BE')} km
+- Belgische markt (AutoScout24.be, 2dehands.be)
+- Staat correctie: goed = marktprijs, gemiddeld = -8%, slecht = -18%
+Wees zo precies mogelijk. Geen algemene schattingen.
 
 Analyseer in het NEDERLANDS:
-1. MARKTWAARDE: realistische verkoopwaarde op Belgische tweedehandsmarkt in staat "${staat}" (min, gemiddeld, max)
-2. KOSTENRAMING: geschatte kosten voor keuring + opkuis + herstel afhankelijk van staat (goed ~€500, gemiddeld ~€900, slecht ~€1500+)
-3. INRUILBOD BEREKENING:
-   - Aanbevolen bod: het bedrag dat de handelaar aan de klant kan bieden (marktwaarde - kosten - gewenste marge). Psychologisch aantrekkelijk getal (gebruik .000 of .500 prijzen voor inruil)
-   - Maximum bod: absoluut maximum dat de handelaar kan bieden zonder verlies
-   - Doorverkoopprijs advies: waarvoor zet hij de wagen daarna te koop?
-4. KLANT OVERTUIGING: 1 concrete tip hoe de handelaar dit bod aan de klant uitlegt zodat de klant akkoord gaat
-5. RISICO'S: 1-2 aandachtspunten specifiek voor dit voertuig of deze staat
+1. MARKTWAARDE: precieze verkoopwaarde voor dit voertuig in staat "${staat}" (min, gemiddeld, max)
+2. KOSTENRAMING: keuring + opkuis + herstel voor staat "${staat}" (goed ~€500, gemiddeld ~€900, slecht ~€1.500+)
+3. INRUILBOD:
+   - Aanbevolen bod = marktwaarde - kosten - ${marge}% marge. Rond af op psychologisch getal (€4.500, €7.000 etc.)
+   - Maximum bod: absoluut maximum zonder verlies
+   - Doorverkoopprijs: waarvoor zet de handelaar de wagen te koop?
+4. HOE UITLEGGEN AAN KLANT: 1 concrete zin om het bod te verantwoorden
+5. RISICO'S: 1-2 aandachtspunten voor dit voertuig
 
 Begin met ENKEL dit JSON-blok:
 {"marktMin":GETAL,"marktGem":GETAL,"marktMax":GETAL,"kosten":GETAL,"bod":GETAL,"maxBod":GETAL,"doorverkoop":GETAL,"tip":"TIP TEKST"}
-Daarna de analyse als tekst.`;
+Daarna de analyse als tekst.`
 
     try {
       const fullText = await callAI(prompt);
