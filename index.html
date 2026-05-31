@@ -403,16 +403,18 @@ VOERTUIG: ${voertuig}
 AANKOOPPRIJS HANDELAAR: €${aankoopprijs.toLocaleString('nl-BE')}
 GEWENSTE MARGE: ${marge}%
 
-BELANGRIJK — baseer je ALLEEN op:
-- Zelfde merk + model${uitvoering ? ' + uitvoering: ' + uitvoering : ''}
+ZOEKCRITERIA (gebruik ALLEEN deze):
+- Merk + model${uitvoering ? ' + uitvoering: ' + uitvoering : ''}
 - Bouwjaar ${parseInt(jaar)-1} t/m ${parseInt(jaar)+1}
 - Max ${(parseInt(km)+20000).toLocaleString('nl-BE')} km
 - Belgische markt (AutoScout24.be, 2dehands.be)
-Wees zo precies mogelijk. Geen algemene schattingen.
+
+CRUCIAAL — GEBRUIK DE LAAGSTE MARKTPRIJZEN:
+Baseer je analyse op de LAAGSTE vergelijkbare prijzen die je terugvindt. De handelaar moet concurrentieel kunnen verkopen.
 
 Analyseer in het NEDERLANDS:
-1. MARKTWAARDE: precieze prijsrange voor dit exacte voertuig (min, gemiddeld, max)
-2. MARGE ANALYSE: is €${aankoopprijs.toLocaleString('nl-BE')} een goede prijs? Winst na kosten (~€650)? Aanbevolen verkoopprijs?
+1. MARKTWAARDE: geef de LAAGSTE reële prijzen voor dit exacte voertuig (min, gemiddeld, max)
+2. MARGE ANALYSE: is €${aankoopprijs.toLocaleString('nl-BE')} een goede prijs? Winst na kosten (~€650)? Aanbevolen verkoopprijs (= laagste marktprijs)?
 3. VERDICT: INTERESSANT / MARGINAAL / NIET INTERESSANT
 4. MARKTINZICHTEN: 2-3 concrete tips (vraag/aanbod, uitvoering, typische kopers)
 
@@ -491,30 +493,32 @@ INRUILWAGEN: ${voertuig}
 STAAT: ${staatLabels[staat]}
 GEWENSTE WINSTMARGE: ${marge}%
 
-BELANGRIJK — baseer je ALLEEN op:
-- Zelfde merk + model${uitvoering ? ' + uitvoering: ' + uitvoering : ''}
+ZOEKCRITERIA (gebruik ALLEEN deze):
+- Merk + model${uitvoering ? ' + uitvoering: ' + uitvoering : ''}
 - Bouwjaar ${parseInt(jaar)-1} t/m ${parseInt(jaar)+1}
 - Max ${(parseInt(km)+20000).toLocaleString('nl-BE')} km
 - Belgische markt (AutoScout24.be, 2dehands.be)
 - Staat correctie: goed = marktprijs, gemiddeld = -8%, slecht = -18%
 
-CRUCIALE REKENREGEL — gebruik ALTIJD deze formule:
-  Marktwaarde (= doorverkoopprijs) is het MAXIMUM
-  Bod aan klant = Marktwaarde - Kosten - (Marktwaarde × marge%)
-  Het bod moet ALTIJD lager zijn dan de marktwaarde.
-  De handelaar verkoopt altijd AAN marktprijs, niet erboven.
+CRUCIAAL — GEBRUIK DE LAAGSTE MARKTPRIJZEN:
+De handelaar moet concurrentieel kunnen doorverkopen. Baseer de marktwaarde op de LAAGSTE vergelijkbare prijzen die je terugvindt, niet het gemiddelde. Zo kan de handelaar zeker verkopen.
 
-Voorbeeld: marktwaarde €8.000, kosten €650, marge 20%
-  Bod = €8.000 - €650 - (€8.000 × 20%) = €8.000 - €650 - €1.600 = €5.750
+REKENREGEL:
+  Doorverkoopprijs = laagste marktprijs (marktMin)
+  Bod = Doorverkoopprijs - Kosten - (Doorverkoopprijs × ${marge}%)
+  Het bod moet ALTIJD lager zijn dan marktMin.
+
+Voorbeeld: laagste marktprijs €7.500, kosten €650, marge 20%
+  Bod = €7.500 - €650 - (€7.500 × 20%) = €7.500 - €650 - €1.500 = €5.350
 
 Analyseer in het NEDERLANDS:
-1. MARKTWAARDE: precieze verkoopwaarde voor dit voertuig in staat "${staat}" (min, gemiddeld, max). Dit is ook de doorverkoopprijs.
+1. MARKTWAARDE: prijsrange voor dit voertuig in staat "${staat}" — geef de LAAGSTE prijzen die realistisch zijn (min, gemiddeld, max)
 2. KOSTENRAMING: keuring + opkuis + herstel voor staat "${staat}" (goed ~€500, gemiddeld ~€900, slecht ~€1.500+)
-3. INRUILBOD (gebruik bovenstaande formule):
-   - Bod = marktwaarde gemiddeld - kosten - (marktwaarde × ${marge/100})
+3. INRUILBOD (gebruik bovenstaande formule met marktMin als basis):
+   - Bod = marktMin - kosten - (marktMin × ${marge/100})
    - Rond af naar beneden op psychologisch getal (€4.500, €7.000 etc.)
-   - Maximum bod = marktwaarde - kosten - minimale marge 10%
-   - Doorverkoopprijs = marktwaarde gemiddeld (niet hoger!)
+   - Maximum bod = marktMin - kosten - minimale marge 10%
+   - Doorverkoopprijs = marktMin (laagste marktprijs, zo kan handelaar zeker verkopen)
 4. HOE UITLEGGEN AAN KLANT: 1 concrete zin om het bod te verantwoorden
 5. RISICO'S: 1-2 aandachtspunten voor dit voertuig
 
@@ -530,12 +534,13 @@ Daarna de analyse als tekst.`
       if (d) {
         const winst = d.doorverkoop - d.bod - d.kosten;
         const winstPct = ((winst/d.marktGem)*100).toFixed(1); // winst tov marktwaarde
-        // Veiligheidscheck: bod mag nooit boven marktwaarde zitten
-        if (d.bod >= d.marktGem) { d.bod = Math.round(d.marktGem * 0.75 / 500) * 500; }
+        // Veiligheidscheck: bod mag nooit boven laagste marktprijs zitten
+        if (d.bod >= d.marktMin) { d.bod = Math.round(d.marktMin * 0.75 / 500) * 500; }
+        if (d.doorverkoop > d.marktMin) { d.doorverkoop = d.marktMin; }
 
         // Groot bod
         document.getElementById('i-bod').textContent = eur(d.bod);
-        document.getElementById('i-bodSub').textContent = `Marktwaarde ${eur(d.marktGem)} − Kosten ${eur(d.kosten)} − Winst ${marge}% = Bod`;
+        document.getElementById('i-bodSub').textContent = `Laagste marktprijs ${eur(d.marktMin)} − Kosten ${eur(d.kosten)} − Winst ${marge}% = Bod`;
 
         // Metrics
         document.getElementById('i-metMarkt').textContent = eur(d.marktGem);
