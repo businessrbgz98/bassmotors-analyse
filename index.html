@@ -119,6 +119,13 @@
 
   .error-box { display: none; background: rgba(255,77,109,0.1); border: 1px solid rgba(255,77,109,0.3); border-radius: var(--radius); padding: 16px; color: var(--red); font-size: 13px; font-family: 'DM Mono', monospace; margin-top: 12px; }
   .error-box.active { display: block; }
+
+  /* AUTOSCOUT GROTE KNOP */
+  .scout-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; background: var(--surface); border: 2px solid var(--accent); border-radius: var(--radius); color: var(--accent); font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 800; letter-spacing: 1px; text-decoration: none; margin-bottom: 12px; transition: background 0.2s; }
+  .scout-btn:hover { background: rgba(240,165,0,0.1); }
+  .scout-btn .scout-icon { font-size: 20px; }
+  .scout-btn .scout-text { display: flex; flex-direction: column; align-items: flex-start; }
+  .scout-btn .scout-text span { font-size: 10px; font-weight: 400; color: var(--muted); letter-spacing: 0.5px; font-family: 'DM Mono', monospace; }
 </style>
 </head>
 <body>
@@ -178,6 +185,11 @@
       <div class="verdict-icon" id="a-verdictIcon"></div>
       <div class="verdict-text"><h2 id="a-verdictTitle"></h2><p id="a-verdictSub"></p></div>
     </div>
+    <a href="#" id="a-scoutBtnTop" class="scout-btn" target="_blank">
+      <span class="scout-icon">🔎</span>
+      <div class="scout-text">Bekijk zoekertjes op AutoScout24<span>Vergelijkbare wagens — basis voor deze analyse</span></div>
+      <span style="margin-left:auto;color:var(--accent);font-size:18px;">→</span>
+    </a>
     <div class="metrics">
       <div class="metric"><div class="metric-label">Marktprijs</div><div class="metric-value orange" id="a-metMarkt">—</div><div class="metric-sub" id="a-metMarktSub"></div></div>
       <div class="metric"><div class="metric-label">Aankoopprijs</div><div class="metric-value" id="a-metAankoop">—</div><div class="metric-sub">jouw investering</div></div>
@@ -185,8 +197,10 @@
       <div class="metric"><div class="metric-label">Verkoopprijs advies</div><div class="metric-value orange" id="a-metVerkoop">—</div><div class="metric-sub">streefprijs AutoScout</div></div>
     </div>
     <div class="card"><div class="card-title">AI Marktanalyse</div><div class="ai-analyse" id="a-aiAnalyse"></div></div>
-    <a href="#" id="a-scoutLinkResult" class="scout-link" target="_blank">
-      <span class="icon">🔗</span><span class="url" id="a-scoutUrlResult"></span><span class="label">AUTOSCOUT24 →</span>
+    <a href="#" id="a-scoutLinkResult" class="scout-btn" target="_blank">
+      <span class="scout-icon">🔎</span>
+      <div class="scout-text">Bekijk zoekertjes op AutoScout24<span id="a-scoutUrlResult">Vergelijkbare wagens in België</span></div>
+      <span style="margin-left:auto;color:var(--accent);font-size:18px;">→</span>
     </a>
     <button class="btn-reset" onclick="resetAankoop()">← Nieuwe analyse</button>
   </div>
@@ -248,6 +262,11 @@
       <div class="bod-prijs" id="i-bod">—</div>
       <div class="bod-sub" id="i-bodSub"></div>
     </div>
+    <a href="#" id="i-scoutBtnTop" class="scout-btn" target="_blank">
+      <span class="scout-icon">🔎</span>
+      <div class="scout-text">Bekijk zoekertjes op AutoScout24<span>Vergelijkbare wagens — basis voor dit bod</span></div>
+      <span style="margin-left:auto;color:var(--accent);font-size:18px;">→</span>
+    </a>
 
     <div class="metrics">
       <div class="metric"><div class="metric-label">Marktwaarde</div><div class="metric-value orange" id="i-metMarkt">—</div><div class="metric-sub" id="i-metMarktSub"></div></div>
@@ -282,8 +301,10 @@
 
     <div class="card"><div class="card-title">AI Inruilanalyse</div><div class="ai-analyse" id="i-aiAnalyse"></div></div>
 
-    <a href="#" id="i-scoutLinkResult" class="scout-link" target="_blank">
-      <span class="icon">🔗</span><span class="url" id="i-scoutUrlResult"></span><span class="label">AUTOSCOUT24 →</span>
+    <a href="#" id="i-scoutLinkResult" class="scout-btn" target="_blank">
+      <span class="scout-icon">🔎</span>
+      <div class="scout-text">Bekijk zoekertjes op AutoScout24<span id="i-scoutUrlResult">Vergelijkbare wagens in België</span></div>
+      <span style="margin-left:auto;color:var(--accent);font-size:18px;">→</span>
     </a>
     <button class="btn-reset" onclick="resetInruil()">← Nieuwe inruil</button>
   </div>
@@ -413,8 +434,10 @@ Daarna de analyse als tekst.`;
         document.getElementById('a-metVerkoop').textContent = eur(d.aanbevolen);
       }
       document.getElementById('a-aiAnalyse').textContent = analyseText;
-      document.getElementById('a-scoutUrlResult').textContent = `AutoScout24 — ${merk} ${model} (${jaar})`;
+      const scoutLabel = `${merk} ${model} (${jaar}) · België`;
+      document.getElementById('a-scoutUrlResult').textContent = scoutLabel;
       document.getElementById('a-scoutLinkResult').href = scoutUrl;
+      document.getElementById('a-scoutBtnTop').href = scoutUrl;
       document.getElementById('a-result').classList.add('active');
     } catch(err) {
       document.getElementById('a-loader').classList.remove('active');
@@ -508,8 +531,10 @@ Daarna de analyse als tekst.`;
         if (d.tip) document.getElementById('i-tip').innerHTML = `<strong>💬 Hoe uitleggen aan klant:</strong> ${d.tip}`;
       }
       document.getElementById('i-aiAnalyse').textContent = analyseText;
-      document.getElementById('i-scoutUrlResult').textContent = `AutoScout24 — ${merk} ${model} (${jaar})`;
+      const iScoutLabel = `${merk} ${model} (${jaar}) · België`;
+      document.getElementById('i-scoutUrlResult').textContent = iScoutLabel;
       document.getElementById('i-scoutLinkResult').href = scoutUrl;
+      document.getElementById('i-scoutBtnTop').href = scoutUrl;
       document.getElementById('i-result').classList.add('active');
     } catch(err) {
       document.getElementById('i-loader').classList.remove('active');
