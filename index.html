@@ -272,7 +272,7 @@
       <div class="metric"><div class="metric-label">Marktwaarde</div><div class="metric-value orange" id="i-metMarkt">—</div><div class="metric-sub" id="i-metMarktSub"></div></div>
       <div class="metric"><div class="metric-label">Kosten schatting</div><div class="metric-value" id="i-metKosten">—</div><div class="metric-sub">keuring + opkuis + herstel</div></div>
       <div class="metric"><div class="metric-label">Verwachte winst</div><div class="metric-value green" id="i-metWinst">—</div><div class="metric-sub" id="i-metWinstSub"></div></div>
-      <div class="metric"><div class="metric-label">Doorverkoopprijs</div><div class="metric-value orange" id="i-metVerkoop">—</div><div class="metric-sub">streefprijs na inruil</div></div>
+      <div class="metric"><div class="metric-label">Doorverkoopprijs</div><div class="metric-value orange" id="i-metVerkoop">—</div><div class="metric-sub">= marktwaarde, niet hoger</div></div>
     </div>
 
     <!-- PRIJSLADDER -->
@@ -489,7 +489,7 @@ Daarna de analyse als tekst.`
 
 INRUILWAGEN: ${voertuig}
 STAAT: ${staatLabels[staat]}
-GEWENSTE MARGE: ${marge}%
+GEWENSTE WINSTMARGE: ${marge}%
 
 BELANGRIJK — baseer je ALLEEN op:
 - Zelfde merk + model${uitvoering ? ' + uitvoering: ' + uitvoering : ''}
@@ -497,15 +497,24 @@ BELANGRIJK — baseer je ALLEEN op:
 - Max ${(parseInt(km)+20000).toLocaleString('nl-BE')} km
 - Belgische markt (AutoScout24.be, 2dehands.be)
 - Staat correctie: goed = marktprijs, gemiddeld = -8%, slecht = -18%
-Wees zo precies mogelijk. Geen algemene schattingen.
+
+CRUCIALE REKENREGEL — gebruik ALTIJD deze formule:
+  Marktwaarde (= doorverkoopprijs) is het MAXIMUM
+  Bod aan klant = Marktwaarde - Kosten - (Marktwaarde × marge%)
+  Het bod moet ALTIJD lager zijn dan de marktwaarde.
+  De handelaar verkoopt altijd AAN marktprijs, niet erboven.
+
+Voorbeeld: marktwaarde €8.000, kosten €650, marge 20%
+  Bod = €8.000 - €650 - (€8.000 × 20%) = €8.000 - €650 - €1.600 = €5.750
 
 Analyseer in het NEDERLANDS:
-1. MARKTWAARDE: precieze verkoopwaarde voor dit voertuig in staat "${staat}" (min, gemiddeld, max)
+1. MARKTWAARDE: precieze verkoopwaarde voor dit voertuig in staat "${staat}" (min, gemiddeld, max). Dit is ook de doorverkoopprijs.
 2. KOSTENRAMING: keuring + opkuis + herstel voor staat "${staat}" (goed ~€500, gemiddeld ~€900, slecht ~€1.500+)
-3. INRUILBOD:
-   - Aanbevolen bod = marktwaarde - kosten - ${marge}% marge. Rond af op psychologisch getal (€4.500, €7.000 etc.)
-   - Maximum bod: absoluut maximum zonder verlies
-   - Doorverkoopprijs: waarvoor zet de handelaar de wagen te koop?
+3. INRUILBOD (gebruik bovenstaande formule):
+   - Bod = marktwaarde gemiddeld - kosten - (marktwaarde × ${marge/100})
+   - Rond af naar beneden op psychologisch getal (€4.500, €7.000 etc.)
+   - Maximum bod = marktwaarde - kosten - minimale marge 10%
+   - Doorverkoopprijs = marktwaarde gemiddeld (niet hoger!)
 4. HOE UITLEGGEN AAN KLANT: 1 concrete zin om het bod te verantwoorden
 5. RISICO'S: 1-2 aandachtspunten voor dit voertuig
 
@@ -520,11 +529,13 @@ Daarna de analyse als tekst.`
       document.getElementById('i-loader').classList.remove('active');
       if (d) {
         const winst = d.doorverkoop - d.bod - d.kosten;
-        const winstPct = ((winst/d.bod)*100).toFixed(1);
+        const winstPct = ((winst/d.marktGem)*100).toFixed(1); // winst tov marktwaarde
+        // Veiligheidscheck: bod mag nooit boven marktwaarde zitten
+        if (d.bod >= d.marktGem) { d.bod = Math.round(d.marktGem * 0.75 / 500) * 500; }
 
         // Groot bod
         document.getElementById('i-bod').textContent = eur(d.bod);
-        document.getElementById('i-bodSub').textContent = `Marktwaarde ~${eur(d.marktGem)} · Na kosten ${eur(d.kosten)} · Marge ${marge}%`;
+        document.getElementById('i-bodSub').textContent = `Marktwaarde ${eur(d.marktGem)} − Kosten ${eur(d.kosten)} − Winst ${marge}% = Bod`;
 
         // Metrics
         document.getElementById('i-metMarkt').textContent = eur(d.marktGem);
@@ -532,7 +543,7 @@ Daarna de analyse als tekst.`
         document.getElementById('i-metKosten').textContent = eur(d.kosten);
         document.getElementById('i-metKosten').className = 'metric-value orange';
         document.getElementById('i-metWinst').textContent = eur(winst);
-        document.getElementById('i-metWinstSub').textContent = `${winstPct}% op investering`;
+        document.getElementById('i-metWinstSub').textContent = `${winstPct}% van marktwaarde`;
         document.getElementById('i-metVerkoop').textContent = eur(d.doorverkoop);
 
         // Prijsladder
