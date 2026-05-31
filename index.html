@@ -7,33 +7,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0f14;
-    --surface: #151820;
-    --surface2: #1c2030;
-    --border: #252a3a;
-    --accent: #f0a500;
-    --accent2: #e05c00;
-    --green: #00c896;
-    --red: #ff4d6d;
-    --text: #e8eaf0;
-    --muted: #6b7280;
-    --radius: 12px;
+    --bg: #0d0f14; --surface: #151820; --surface2: #1c2030; --border: #252a3a;
+    --accent: #f0a500; --accent2: #e05c00; --green: #00c896; --red: #ff4d6d;
+    --text: #e8eaf0; --muted: #6b7280; --radius: 12px;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; padding: 24px 16px 48px; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    min-height: 100vh;
-    padding: 24px 16px 48px;
-  }
-
-  .header { text-align: center; margin-bottom: 36px; }
+  .header { text-align: center; margin-bottom: 28px; }
   .logo { font-size: 11px; font-weight: 600; letter-spacing: 4px; color: var(--accent); text-transform: uppercase; margin-bottom: 8px; }
-  .header h1 { font-size: clamp(28px, 6vw, 48px); font-weight: 800; line-height: 1.1; background: linear-gradient(135deg, #f0a500 0%, #ff6b35 60%, #e8eaf0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .header p { color: var(--muted); font-size: 14px; margin-top: 8px; font-family: 'DM Mono', monospace; }
+  .header h1 { font-size: clamp(26px, 6vw, 44px); font-weight: 800; line-height: 1.1; background: linear-gradient(135deg, #f0a500 0%, #ff6b35 60%, #e8eaf0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .header p { color: var(--muted); font-size: 13px; margin-top: 8px; font-family: 'DM Mono', monospace; }
+
+  /* TABS */
+  .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .tab-btn { padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--muted); font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center; }
+  .tab-btn.active { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #0d0f14; border-color: transparent; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
 
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; }
   .card-title { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
@@ -41,9 +32,7 @@
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .form-group { display: flex; flex-direction: column; gap: 6px; }
   .form-group.full { grid-column: 1 / -1; }
-
   label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-weight: 600; }
-
   input, select { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; color: var(--text); font-family: 'DM Mono', monospace; font-size: 14px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
   input:focus, select:focus { border-color: var(--accent); }
   input::placeholder { color: var(--muted); }
@@ -53,6 +42,14 @@
   .price-highlight { position: relative; }
   .price-highlight input { border-color: var(--accent2); padding-left: 30px; }
   .price-highlight::before { content: '€'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--accent); font-family: 'DM Mono', monospace; font-size: 14px; pointer-events: none; }
+
+  /* STAAT SELECTOR */
+  .staat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .staat-btn { padding: 12px 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; transition: all 0.2s; }
+  .staat-btn span { display: block; font-size: 20px; margin-bottom: 4px; }
+  .staat-btn.active.goed { border-color: var(--green); color: var(--green); background: rgba(0,200,150,0.1); }
+  .staat-btn.active.gemiddeld { border-color: var(--accent); color: var(--accent); background: rgba(240,165,0,0.1); }
+  .staat-btn.active.slecht { border-color: var(--red); color: var(--red); background: rgba(255,77,109,0.1); }
 
   .btn-analyse { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; border-radius: var(--radius); color: #0d0f14; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; letter-spacing: 1px; cursor: pointer; transition: opacity 0.2s, transform 0.1s; margin-top: 8px; }
   .btn-analyse:active { transform: scale(0.98); opacity: 0.9; }
@@ -93,7 +90,29 @@
   .metric-value.orange { color: var(--accent); }
   .metric-sub { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
 
+  /* INRUIL BOD HIGHLIGHT */
+  .bod-highlight { background: rgba(0,200,150,0.08); border: 2px solid rgba(0,200,150,0.4); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 16px; text-align: center; }
+  .bod-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--green); margin-bottom: 8px; font-weight: 700; }
+  .bod-prijs { font-size: 42px; font-weight: 800; font-family: 'DM Mono', monospace; color: var(--green); }
+  .bod-sub { font-size: 12px; color: var(--muted); margin-top: 6px; font-family: 'DM Mono', monospace; }
+
+  .prijsladder { margin-bottom: 8px; }
+  .ladder-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .ladder-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); width: 130px; flex-shrink: 0; }
+  .ladder-bar-wrap { flex: 1; background: var(--surface2); border-radius: 99px; height: 10px; overflow: hidden; }
+  .ladder-bar { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+  .ladder-bar.markt { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .ladder-bar.bod { background: var(--green); }
+  .ladder-bar.minimum { background: var(--red); }
+  .ladder-price { font-size: 14px; font-weight: 800; font-family: 'DM Mono', monospace; width: 90px; text-align: right; flex-shrink: 0; }
+  .ladder-price.markt { color: var(--accent); }
+  .ladder-price.bod { color: var(--green); }
+  .ladder-price.minimum { color: var(--red); }
+  .ladder-divider { border: none; border-top: 1px dashed var(--border); margin: 12px 0; }
+
   .ai-analyse { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 20px; font-size: 14px; line-height: 1.7; color: var(--text); white-space: pre-wrap; font-family: 'DM Mono', monospace; }
+  .tip-box { background: rgba(0,200,150,0.08); border: 1px solid rgba(0,200,150,0.2); border-radius: 8px; padding: 14px 16px; font-size: 13px; font-family: 'DM Mono', monospace; color: var(--text); line-height: 1.6; margin-top: 12px; }
+  .tip-box strong { color: var(--green); }
 
   .btn-reset { width: 100%; padding: 12px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius); color: var(--muted); font-family: 'Syne', sans-serif; font-size: 13px; cursor: pointer; margin-top: 12px; transition: border-color 0.2s, color 0.2s; }
   .btn-reset:hover { border-color: var(--accent); color: var(--accent); }
@@ -106,273 +125,404 @@
 
 <div class="header">
   <div class="logo">Bass Motors</div>
-  <h1>Marktwaarde<br>Analyser</h1>
-  <p>AutoScout24 · AI-gestuurde marge-analyse</p>
+  <h1>Voertuig<br>Analyser</h1>
+  <p>AutoScout24 · AI-gestuurde markt & inruil analyse</p>
 </div>
 
-<div class="card" id="formCard">
-  <div class="card-title">Voertuiggegevens</div>
-  <div class="form-grid">
-    <div class="form-group">
-      <label>Merk</label>
-      <input type="text" id="merk" placeholder="BMW" />
-    </div>
-    <div class="form-group">
-      <label>Model</label>
-      <input type="text" id="model" placeholder="3 Serie" />
-    </div>
-    <div class="form-group">
-      <label>Bouwjaar</label>
-      <input type="number" id="jaar" placeholder="2019" min="1990" max="2026" />
-    </div>
-    <div class="form-group">
-      <label>Kilometerstand</label>
-      <input type="number" id="km" placeholder="85000" />
-    </div>
-    <div class="form-group full">
-      <label>Uitvoering / Versie (optioneel)</label>
-      <input type="text" id="uitvoering" placeholder="320d xDrive M Sport" />
-    </div>
-    <div class="form-group">
-      <label>Brandstof</label>
-      <select id="brandstof">
-        <option value="">Alle</option>
-        <option value="D">Diesel</option>
-        <option value="B">Benzine</option>
-        <option value="E">Elektrisch</option>
-        <option value="H">Hybride</option>
-        <option value="L">LPG</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Transmissie</label>
-      <select id="transmissie">
-        <option value="">Alle</option>
-        <option value="A">Automaat</option>
-        <option value="M">Manueel</option>
-      </select>
-    </div>
-  </div>
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('aankoop')">🔍 Aankoop beoordelen</button>
+  <button class="tab-btn" onclick="switchTab('inruil')">🔄 Inruil berekenen</button>
+</div>
 
-  <div class="card-title" style="margin-top:24px;">Financieel</div>
-  <div class="price-row">
-    <div class="form-group">
-      <label>Jouw aankoopprijs (€)</label>
-      <div class="price-highlight">
-        <input type="number" id="aankoopprijs" placeholder="12500" />
+<!-- ======================== TAB 1: AANKOOP ======================== -->
+<div class="tab-panel active" id="tab-aankoop">
+  <div class="card">
+    <div class="card-title">Voertuiggegevens</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Merk</label><input type="text" id="a-merk" placeholder="BMW" /></div>
+      <div class="form-group"><label>Model</label><input type="text" id="a-model" placeholder="3 Serie" /></div>
+      <div class="form-group"><label>Bouwjaar</label><input type="number" id="a-jaar" placeholder="2019" min="1990" max="2026" /></div>
+      <div class="form-group"><label>Kilometerstand</label><input type="number" id="a-km" placeholder="85000" /></div>
+      <div class="form-group full"><label>Uitvoering (optioneel)</label><input type="text" id="a-uitvoering" placeholder="320d xDrive M Sport" /></div>
+      <div class="form-group">
+        <label>Brandstof</label>
+        <select id="a-brandstof">
+          <option value="">Alle</option><option value="D">Diesel</option><option value="B">Benzine</option>
+          <option value="E">Elektrisch</option><option value="H">Hybride</option><option value="L">LPG</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Transmissie</label>
+        <select id="a-transmissie">
+          <option value="">Alle</option><option value="A">Automaat</option><option value="M">Manueel</option>
+        </select>
       </div>
     </div>
-    <div class="form-group">
-      <label>Gewenste marge (%)</label>
-      <input type="number" id="marge" placeholder="15" min="1" max="100" />
+    <div class="card-title" style="margin-top:24px;">Financieel</div>
+    <div class="price-row">
+      <div class="form-group"><label>Aankoopprijs (€)</label><div class="price-highlight"><input type="number" id="a-aankoopprijs" placeholder="12500" /></div></div>
+      <div class="form-group"><label>Gewenste marge (%)</label><input type="number" id="a-marge" placeholder="15" min="1" max="100" /></div>
     </div>
+    <button class="btn-analyse" id="a-analyseBtn" onclick="startAankoop()">🔍 Analyseer marktwaarde</button>
+    <div class="error-box" id="a-errorBox"></div>
+    <a href="#" id="a-scoutLink" class="scout-link" target="_blank" style="display:none">
+      <span class="icon">🔗</span><span class="url" id="a-scoutUrl"></span><span class="label">OPEN →</span>
+    </a>
   </div>
 
-  <button class="btn-analyse" id="analyseBtn" onclick="startAnalyse()">
-    🔍 Analyseer marktwaarde
-  </button>
+  <div class="loader" id="a-loader"><div class="spinner"></div><p>Markt wordt geanalyseerd via AI...</p></div>
 
-  <div class="error-box" id="errorBox"></div>
-
-  <a href="#" id="scoutLink" class="scout-link" target="_blank" style="display:none">
-    <span class="icon">🔗</span>
-    <span class="url" id="scoutUrl"></span>
-    <span class="label">OPEN →</span>
-  </a>
+  <div class="result" id="a-result">
+    <div class="verdict" id="a-verdict">
+      <div class="verdict-icon" id="a-verdictIcon"></div>
+      <div class="verdict-text"><h2 id="a-verdictTitle"></h2><p id="a-verdictSub"></p></div>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">Marktprijs</div><div class="metric-value orange" id="a-metMarkt">—</div><div class="metric-sub" id="a-metMarktSub"></div></div>
+      <div class="metric"><div class="metric-label">Aankoopprijs</div><div class="metric-value" id="a-metAankoop">—</div><div class="metric-sub">jouw investering</div></div>
+      <div class="metric"><div class="metric-label">Geschatte winst</div><div class="metric-value" id="a-metWinst">—</div><div class="metric-sub" id="a-metWinstSub"></div></div>
+      <div class="metric"><div class="metric-label">Verkoopprijs advies</div><div class="metric-value orange" id="a-metVerkoop">—</div><div class="metric-sub">streefprijs AutoScout</div></div>
+    </div>
+    <div class="card"><div class="card-title">AI Marktanalyse</div><div class="ai-analyse" id="a-aiAnalyse"></div></div>
+    <a href="#" id="a-scoutLinkResult" class="scout-link" target="_blank">
+      <span class="icon">🔗</span><span class="url" id="a-scoutUrlResult"></span><span class="label">AUTOSCOUT24 →</span>
+    </a>
+    <button class="btn-reset" onclick="resetAankoop()">← Nieuwe analyse</button>
+  </div>
 </div>
 
-<div class="loader" id="loader">
-  <div class="spinner"></div>
-  <p>Markt wordt geanalyseerd via AI...</p>
-</div>
-
-<div class="result" id="result">
-  <div class="verdict" id="verdict">
-    <div class="verdict-icon" id="verdictIcon"></div>
-    <div class="verdict-text">
-      <h2 id="verdictTitle"></h2>
-      <p id="verdictSub"></p>
-    </div>
-  </div>
-
-  <div class="metrics">
-    <div class="metric">
-      <div class="metric-label">Marktprijs schatting</div>
-      <div class="metric-value orange" id="metMarkt">—</div>
-      <div class="metric-sub" id="metMarktSub"></div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Jouw aankoopprijs</div>
-      <div class="metric-value" id="metAankoop">—</div>
-      <div class="metric-sub">incl. gewenste marge</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Geschatte winst</div>
-      <div class="metric-value" id="metWinst">—</div>
-      <div class="metric-sub" id="metWinstSub"></div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Aanbevolen verkoopprijs</div>
-      <div class="metric-value orange" id="metVerkoop">—</div>
-      <div class="metric-sub" id="metVerkoopSub"></div>
-    </div>
-  </div>
-
+<!-- ======================== TAB 2: INRUIL ======================== -->
+<div class="tab-panel" id="tab-inruil">
   <div class="card">
-    <div class="card-title">AI Marktanalyse</div>
-    <div class="ai-analyse" id="aiAnalyse"></div>
+    <div class="card-title">Gegevens inruilwagen</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Merk</label><input type="text" id="i-merk" placeholder="Volkswagen" /></div>
+      <div class="form-group"><label>Model</label><input type="text" id="i-model" placeholder="Golf" /></div>
+      <div class="form-group"><label>Bouwjaar</label><input type="number" id="i-jaar" placeholder="2018" min="1990" max="2026" /></div>
+      <div class="form-group"><label>Kilometerstand</label><input type="number" id="i-km" placeholder="95000" /></div>
+      <div class="form-group full"><label>Uitvoering (optioneel)</label><input type="text" id="i-uitvoering" placeholder="1.6 TDI Comfortline" /></div>
+      <div class="form-group">
+        <label>Brandstof</label>
+        <select id="i-brandstof">
+          <option value="">Alle</option><option value="D">Diesel</option><option value="B">Benzine</option>
+          <option value="E">Elektrisch</option><option value="H">Hybride</option><option value="L">LPG</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Transmissie</label>
+        <select id="i-transmissie">
+          <option value="">Alle</option><option value="A">Automaat</option><option value="M">Manueel</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card-title" style="margin-top:24px;">Staat van de wagen</div>
+    <div class="staat-grid">
+      <button class="staat-btn goed active" onclick="selectStaat('goed', this)"><span>🟢</span>Goed</button>
+      <button class="staat-btn gemiddeld" onclick="selectStaat('gemiddeld', this)"><span>🟡</span>Gemiddeld</button>
+      <button class="staat-btn slecht" onclick="selectStaat('slecht', this)"><span>🔴</span>Slecht</button>
+    </div>
+    <input type="hidden" id="i-staat" value="goed" />
+
+    <div class="card-title" style="margin-top:24px;">Financieel doel</div>
+    <div class="form-group">
+      <label>Gewenste winstmarge bij doorverkoop (%)</label>
+      <input type="number" id="i-marge" placeholder="20" min="5" max="60" />
+    </div>
+
+    <button class="btn-analyse" id="i-analyseBtn" onclick="startInruil()">🔄 Bereken inruilbod</button>
+    <div class="error-box" id="i-errorBox"></div>
+    <a href="#" id="i-scoutLink" class="scout-link" target="_blank" style="display:none">
+      <span class="icon">🔗</span><span class="url" id="i-scoutUrl"></span><span class="label">OPEN →</span>
+    </a>
   </div>
 
-  <a href="#" id="scoutLinkResult" class="scout-link" target="_blank">
-    <span class="icon">🔗</span>
-    <span class="url" id="scoutUrlResult"></span>
-    <span class="label">AUTOSCOUT24 →</span>
-  </a>
+  <div class="loader" id="i-loader"><div class="spinner"></div><p>Inruilbod wordt berekend via AI...</p></div>
 
-  <button class="btn-reset" onclick="resetForm()">← Nieuwe analyse</button>
+  <div class="result" id="i-result">
+
+    <!-- GROOT BOD -->
+    <div class="bod-highlight">
+      <div class="bod-label">Jouw inruilbod aan de klant</div>
+      <div class="bod-prijs" id="i-bod">—</div>
+      <div class="bod-sub" id="i-bodSub"></div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">Marktwaarde</div><div class="metric-value orange" id="i-metMarkt">—</div><div class="metric-sub" id="i-metMarktSub"></div></div>
+      <div class="metric"><div class="metric-label">Kosten schatting</div><div class="metric-value" id="i-metKosten">—</div><div class="metric-sub">keuring + opkuis + herstel</div></div>
+      <div class="metric"><div class="metric-label">Verwachte winst</div><div class="metric-value green" id="i-metWinst">—</div><div class="metric-sub" id="i-metWinstSub"></div></div>
+      <div class="metric"><div class="metric-label">Doorverkoopprijs</div><div class="metric-value orange" id="i-metVerkoop">—</div><div class="metric-sub">streefprijs na inruil</div></div>
+    </div>
+
+    <!-- PRIJSLADDER -->
+    <div class="card">
+      <div class="card-title">Prijsoverzicht</div>
+      <div class="prijsladder">
+        <div class="ladder-row">
+          <div class="ladder-label">Marktwaarde</div>
+          <div class="ladder-bar-wrap"><div class="ladder-bar markt" id="i-barMarkt" style="width:100%"></div></div>
+          <div class="ladder-price markt" id="i-ladderMarkt">—</div>
+        </div>
+        <div class="ladder-row">
+          <div class="ladder-label">Jouw bod</div>
+          <div class="ladder-bar-wrap"><div class="ladder-bar bod" id="i-barBod" style="width:75%"></div></div>
+          <div class="ladder-price bod" id="i-ladderBod">—</div>
+        </div>
+        <hr class="ladder-divider">
+        <div class="ladder-row">
+          <div class="ladder-label">Max bod ⚠️</div>
+          <div class="ladder-bar-wrap"><div class="ladder-bar minimum" id="i-barMax" style="width:85%"></div></div>
+          <div class="ladder-price minimum" id="i-ladderMax">—</div>
+        </div>
+      </div>
+      <div class="tip-box" id="i-tip"></div>
+    </div>
+
+    <div class="card"><div class="card-title">AI Inruilanalyse</div><div class="ai-analyse" id="i-aiAnalyse"></div></div>
+
+    <a href="#" id="i-scoutLinkResult" class="scout-link" target="_blank">
+      <span class="icon">🔗</span><span class="url" id="i-scoutUrlResult"></span><span class="label">AUTOSCOUT24 →</span>
+    </a>
+    <button class="btn-reset" onclick="resetInruil()">← Nieuwe inruil</button>
+  </div>
 </div>
 
 <script>
-  function buildAutoScoutUrl(merk, model, jaar, km, brandstof, transmissie) {
+  // ---- TABS ----
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (i===0&&tab==='aankoop')||(i===1&&tab==='inruil')));
+    document.getElementById('tab-aankoop').classList.toggle('active', tab==='aankoop');
+    document.getElementById('tab-inruil').classList.toggle('active', tab==='inruil');
+  }
+
+  // ---- STAAT ----
+  let staatKeuze = 'goed';
+  function selectStaat(staat, el) {
+    staatKeuze = staat;
+    document.querySelectorAll('.staat-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('i-staat').value = staat;
+  }
+
+  // ---- HELPERS ----
+  function buildScoutUrl(merk, model, jaar, km, brandstof, transmissie) {
     const base = 'https://www.autoscout24.be/lst';
-    const merkSlug = merk.toLowerCase().replace(/\s+/g, '-');
-    const modelSlug = model.toLowerCase().replace(/\s+/g, '-');
-    const jaarMin = Math.max(parseInt(jaar) - 1, 2000);
-    const jaarMax = parseInt(jaar) + 1;
-    const kmMax = Math.round(parseInt(km) * 1.3);
-    let url = `${base}/${merkSlug}/${modelSlug}?fregfrom=${jaarMin}&fregto=${jaarMax}&kmto=${kmMax}&cy=B&atype=C`;
+    const jaarMin = Math.max(parseInt(jaar)-1, 2000), jaarMax = parseInt(jaar)+1;
+    const kmMax = Math.round(parseInt(km)*1.3);
+    let url = `${base}/${merk.toLowerCase().replace(/\s+/g,'-')}/${model.toLowerCase().replace(/\s+/g,'-')}?fregfrom=${jaarMin}&fregto=${jaarMax}&kmto=${kmMax}&cy=B&atype=C`;
     if (brandstof) url += `&fuel=${brandstof}`;
     if (transmissie) url += `&gear=${transmissie}`;
-    url += '&sort=standard&desc=0&ustate=N%2CU';
-    return url;
+    return url + '&sort=standard&desc=0&ustate=N%2CU';
   }
-
-  function formatEur(val) {
-    return '€' + Math.round(val).toLocaleString('nl-BE');
+  function eur(val) { return '€' + Math.round(val).toLocaleString('nl-BE'); }
+  async function callAI(prompt) {
+    const r = await fetch('/api/analyse', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] })
+    });
+    const text = await r.text();
+    let d;
+    try { d = JSON.parse(text); } catch(e) { throw new Error('Server antwoord: ' + text.slice(0,200)); }
+    if (d.error) throw new Error('API fout: ' + (d.error.message || JSON.stringify(d.error)));
+    if (!d.content) throw new Error('Onverwacht antwoord: ' + JSON.stringify(d).slice(0,200));
+    return d.content.map(b => b.text||'').join('');
   }
-
-  async function startAnalyse() {
-    const merk = document.getElementById('merk').value.trim();
-    const model = document.getElementById('model').value.trim();
-    const jaar = document.getElementById('jaar').value.trim();
-    const km = document.getElementById('km').value.trim();
-    const uitvoering = document.getElementById('uitvoering').value.trim();
-    const brandstof = document.getElementById('brandstof').value;
-    const transmissie = document.getElementById('transmissie').value;
-    const aankoopprijs = parseFloat(document.getElementById('aankoopprijs').value);
-    const margeWens = parseFloat(document.getElementById('marge').value) || 15;
-
-    const errBox = document.getElementById('errorBox');
-    errBox.classList.remove('active');
-
-    if (!merk || !model || !jaar || !km || isNaN(aankoopprijs)) {
-      errBox.textContent = '⚠️ Vul minstens merk, model, bouwjaar, km-stand en aankoopprijs in.';
-      errBox.classList.add('active');
-      return;
+  function parseJSON(text) {
+    // Verwijder eventuele markdown code blocks
+    text = text.replace(/```json/g, '').replace(/```/g, '');
+    // Zoek het meest complete JSON object (langste match)
+    const matches = [];
+    let depth = 0, start = -1;
+    for (let i = 0; i < text.length; i++) {
+      if (text[i] === '{') { if (depth === 0) start = i; depth++; }
+      else if (text[i] === '}') { depth--; if (depth === 0 && start !== -1) { matches.push(text.slice(start, i+1)); start = -1; } }
     }
+    for (const m of matches) {
+      try {
+        const parsed = JSON.parse(m);
+        if (Object.values(parsed).some(v => typeof v === 'number')) return parsed;
+      } catch(e) {}
+    }
+    // Fallback: haal waarden op met regex
+    const get = (key) => { const r = new RegExp('"' + key + '"\\s*:\\s*([0-9]+(?:\\.[0-9]+)?)'); const m = text.match(r); return m ? parseFloat(m[1]) : null; };
+    const getStr = (key) => { const r = new RegExp('"' + key + '"\\s*:\\s*"([^"]+)"'); const m = text.match(r); return m ? m[1] : null; };
+    return { marktMin:get('marktMin'), marktGem:get('marktGem'), marktMax:get('marktMax'), aanbevolen:get('aanbevolen'), verdict:getStr('verdict'), kosten:get('kosten'), bod:get('bod'), maxBod:get('maxBod'), doorverkoop:get('doorverkoop'), tip:getStr('tip') };
+  }
 
-    const scoutUrl = buildAutoScoutUrl(merk, model, jaar, km, brandstof, transmissie);
-    const linkEl = document.getElementById('scoutLink');
-    document.getElementById('scoutUrl').textContent = scoutUrl;
-    linkEl.href = scoutUrl;
-    linkEl.style.display = 'flex';
+  // ---- TAB 1: AANKOOP ----
+  async function startAankoop() {
+    const merk=document.getElementById('a-merk').value.trim(), model=document.getElementById('a-model').value.trim();
+    const jaar=document.getElementById('a-jaar').value.trim(), km=document.getElementById('a-km').value.trim();
+    const uitvoering=document.getElementById('a-uitvoering').value.trim();
+    const brandstof=document.getElementById('a-brandstof').value, transmissie=document.getElementById('a-transmissie').value;
+    const aankoopprijs=parseFloat(document.getElementById('a-aankoopprijs').value);
+    const marge=parseFloat(document.getElementById('a-marge').value)||15;
+    const errBox=document.getElementById('a-errorBox');
+    errBox.classList.remove('active');
+    if (!merk||!model||!jaar||!km||isNaN(aankoopprijs)) { errBox.textContent='⚠️ Vul minstens merk, model, bouwjaar, km-stand en aankoopprijs in.'; errBox.classList.add('active'); return; }
 
-    document.getElementById('analyseBtn').disabled = true;
-    document.getElementById('loader').classList.add('active');
-    document.getElementById('result').classList.remove('active');
+    const scoutUrl = buildScoutUrl(merk, model, jaar, km, brandstof, transmissie);
+    document.getElementById('a-scoutUrl').textContent = scoutUrl;
+    document.getElementById('a-scoutLink').href = scoutUrl;
+    document.getElementById('a-scoutLink').style.display = 'flex';
+    document.getElementById('a-analyseBtn').disabled = true;
+    document.getElementById('a-loader').classList.add('active');
+    document.getElementById('a-result').classList.remove('active');
 
-    const voertuig = `${merk} ${model}${uitvoering ? ' ' + uitvoering : ''}, bouwjaar ${jaar}, ${parseInt(km).toLocaleString('nl-BE')} km${brandstof ? ', brandstof: ' + brandstof : ''}${transmissie ? ', transmissie: ' + transmissie : ''}`;
+    const voertuig = `${merk} ${model}${uitvoering?' '+uitvoering:''}, bouwjaar ${jaar}, ${parseInt(km).toLocaleString('nl-BE')} km${brandstof?', brandstof: '+brandstof:''}${transmissie?', transmissie: '+transmissie:''}`;
 
-    const prompt = `Je bent een expert Belgische automarkt analist. Een autohandelaar (Bass Motors, dealer in België) vraagt je een snelle marktanalyse.
+    const prompt = `Je bent een expert Belgische automarkt analist. Autohandelaar Bass Motors vraagt een marktanalyse.
 
 VOERTUIG: ${voertuig}
 AANKOOPPRIJS HANDELAAR: €${aankoopprijs.toLocaleString('nl-BE')}
-GEWENSTE MARGE: ${margeWens}%
+GEWENSTE MARGE: ${marge}%
 
-Geef me een gestructureerde analyse in het NEDERLANDS met:
+Analyseer in het NEDERLANDS:
+1. MARKTWAARDE: realistische range op Belgische tweedehandsmarkt (min, gemiddeld, max)
+2. MARGE ANALYSE: is aankoopprijs interessant? Geschatte winst? Aanbevolen verkoopprijs (na kosten ~€650)?
+3. VERDICT: INTERESSANT / MARGINAAL / NIET INTERESSANT
+4. MARKTINZICHTEN: 2-3 tips (vraag/aanbod, seizoen, kopers)
 
-1. MARKTWAARDE SCHATTING: Geef een realistische marktprijs range voor dit voertuig op de Belgische tweedehandsmarkt (gebaseerd op AutoScout24 BE, 2dehands.be, etc.). Geef een minimum, gemiddelde en maximum marktprijs.
-
-2. MARGE ANALYSE:
-   - Is de aankoopprijs van €${aankoopprijs.toLocaleString('nl-BE')} interessant voor de handelaar?
-   - Wat is de geschatte brutowinst als hij verkoopt aan marktprijs?
-   - Wat is de aanbevolen verkoopprijs rekening houdend met kosten (keuring, poetsen, kleine herstellingen ~€500-800)?
-
-3. VERDICT: Geef een duidelijk oordeel: INTERESSANT / MARGINAAL / NIET INTERESSANT
-
-4. MARKTINZICHTEN: 2-3 korte tips specifiek voor dit voertuig (vraag & aanbod, seizoen, typische kopers, aandachtspunten).
-
-Formaat: Begin met een JSON-blok (enkel dit):
-{"marktMin": GETAL, "marktGem": GETAL, "marktMax": GETAL, "aanbevolen": GETAL, "verdict": "GO|MAYBE|NOGO"}
-Daarna de volledige analyse als tekst.`;
+Begin met ENKEL dit JSON-blok:
+{"marktMin":GETAL,"marktGem":GETAL,"marktMax":GETAL,"aanbevolen":GETAL,"verdict":"GO|MAYBE|NOGO"}
+Daarna de analyse als tekst.`;
 
     try {
-      const response = await fetch('/api/analyse', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [{ role: 'user', content: prompt }]
-        })
-      });
-
-      const data = await response.json();
-      const fullText = data.content.map(b => b.text || '').join('');
-
-      const jsonMatch = fullText.match(/\{[^}]+\}/);
-      let marktData = null;
-      if (jsonMatch) {
-        try { marktData = JSON.parse(jsonMatch[0]); } catch(e) {}
+      const fullText = await callAI(prompt);
+      const d = parseJSON(fullText);
+      const analyseText = fullText.replace(/\{[\s\S]*?\}/, '').trim();
+      document.getElementById('a-loader').classList.remove('active');
+      if (d) {
+        const winst = d.aanbevolen - aankoopprijs - 650;
+        const winstPct = ((winst/aankoopprijs)*100).toFixed(1);
+        const doelprijs = aankoopprijs*(1+marge/100);
+        const vEl = document.getElementById('a-verdict');
+        vEl.className = 'verdict '+(d.verdict==='GO'?'go':d.verdict==='NOGO'?'nogo':'maybe');
+        document.getElementById('a-verdictIcon').textContent = d.verdict==='GO'?'✅':d.verdict==='NOGO'?'🚫':'⚠️';
+        document.getElementById('a-verdictTitle').textContent = d.verdict==='GO'?'Interessant!':d.verdict==='NOGO'?'Niet interessant':'Marginaal';
+        document.getElementById('a-verdictSub').textContent = `Marktprijs ~${eur(d.marktGem)} · Jouw doel ${eur(doelprijs)}`;
+        document.getElementById('a-metMarkt').textContent = eur(d.marktGem);
+        document.getElementById('a-metMarktSub').textContent = `Range: ${eur(d.marktMin)} – ${eur(d.marktMax)}`;
+        document.getElementById('a-metAankoop').textContent = eur(aankoopprijs);
+        document.getElementById('a-metAankoop').className = 'metric-value';
+        document.getElementById('a-metWinst').textContent = eur(winst);
+        document.getElementById('a-metWinst').className = 'metric-value '+(winst>0?'green':'red');
+        document.getElementById('a-metWinstSub').textContent = `${winstPct}% na kosten (~€650)`;
+        document.getElementById('a-metVerkoop').textContent = eur(d.aanbevolen);
       }
-
-      const analyseText = fullText.replace(/\{[^}]+\}/, '').trim();
-
-      document.getElementById('loader').classList.remove('active');
-
-      if (marktData) {
-        const { marktMin, marktGem, marktMax, aanbevolen, verdict } = marktData;
-        const winst = aanbevolen - aankoopprijs - 650;
-        const winstPct = ((winst / aankoopprijs) * 100).toFixed(1);
-        const doelprijs = aankoopprijs * (1 + margeWens / 100);
-
-        const verdictEl = document.getElementById('verdict');
-        verdictEl.className = 'verdict ' + (verdict === 'GO' ? 'go' : verdict === 'NOGO' ? 'nogo' : 'maybe');
-        document.getElementById('verdictIcon').textContent = verdict === 'GO' ? '✅' : verdict === 'NOGO' ? '🚫' : '⚠️';
-        document.getElementById('verdictTitle').textContent = verdict === 'GO' ? 'Interessant!' : verdict === 'NOGO' ? 'Niet interessant' : 'Marginaal';
-        document.getElementById('verdictSub').textContent = `Marktprijs ~${formatEur(marktGem)} · Jouw doel ${formatEur(doelprijs)}`;
-
-        document.getElementById('metMarkt').textContent = formatEur(marktGem);
-        document.getElementById('metMarktSub').textContent = `Range: ${formatEur(marktMin)} – ${formatEur(marktMax)}`;
-        document.getElementById('metAankoop').textContent = formatEur(aankoopprijs);
-        document.getElementById('metAankoop').className = 'metric-value';
-
-        const winstEl = document.getElementById('metWinst');
-        winstEl.textContent = formatEur(winst);
-        winstEl.className = 'metric-value ' + (winst > 0 ? 'green' : 'red');
-        document.getElementById('metWinstSub').textContent = `${winstPct}% na kosten (~€650)`;
-
-        document.getElementById('metVerkoop').textContent = formatEur(aanbevolen);
-        document.getElementById('metVerkoopSub').textContent = `Streefprijs op AutoScout`;
-      }
-
-      document.getElementById('aiAnalyse').textContent = analyseText;
-      document.getElementById('scoutUrlResult').textContent = 'AutoScout24 — ' + merk + ' ' + model + ' (' + jaar + ')';
-      document.getElementById('scoutLinkResult').href = scoutUrl;
-      document.getElementById('result').classList.add('active');
-
-    } catch (err) {
-      document.getElementById('loader').classList.remove('active');
-      errBox.textContent = '⚠️ Fout bij analyse: ' + err.message;
-      errBox.classList.add('active');
+      document.getElementById('a-aiAnalyse').textContent = analyseText;
+      document.getElementById('a-scoutUrlResult').textContent = `AutoScout24 — ${merk} ${model} (${jaar})`;
+      document.getElementById('a-scoutLinkResult').href = scoutUrl;
+      document.getElementById('a-result').classList.add('active');
+    } catch(err) {
+      document.getElementById('a-loader').classList.remove('active');
+      errBox.textContent = '⚠️ Fout: ' + err.message; errBox.classList.add('active');
     }
-
-    document.getElementById('analyseBtn').disabled = false;
+    document.getElementById('a-analyseBtn').disabled = false;
   }
 
-  function resetForm() {
-    document.getElementById('result').classList.remove('active');
-    document.getElementById('errorBox').classList.remove('active');
-    document.getElementById('scoutLink').style.display = 'none';
-    document.getElementById('analyseBtn').disabled = false;
+  function resetAankoop() {
+    document.getElementById('a-result').classList.remove('active');
+    document.getElementById('a-errorBox').classList.remove('active');
+    document.getElementById('a-scoutLink').style.display = 'none';
+    document.getElementById('a-analyseBtn').disabled = false;
+  }
+
+  // ---- TAB 2: INRUIL ----
+  async function startInruil() {
+    const merk=document.getElementById('i-merk').value.trim(), model=document.getElementById('i-model').value.trim();
+    const jaar=document.getElementById('i-jaar').value.trim(), km=document.getElementById('i-km').value.trim();
+    const uitvoering=document.getElementById('i-uitvoering').value.trim();
+    const brandstof=document.getElementById('i-brandstof').value, transmissie=document.getElementById('i-transmissie').value;
+    const staat=staatKeuze, marge=parseFloat(document.getElementById('i-marge').value)||20;
+    const errBox=document.getElementById('i-errorBox');
+    errBox.classList.remove('active');
+    if (!merk||!model||!jaar||!km) { errBox.textContent='⚠️ Vul minstens merk, model, bouwjaar en km-stand in.'; errBox.classList.add('active'); return; }
+
+    const scoutUrl = buildScoutUrl(merk, model, jaar, km, brandstof, transmissie);
+    document.getElementById('i-scoutUrl').textContent = scoutUrl;
+    document.getElementById('i-scoutLink').href = scoutUrl;
+    document.getElementById('i-scoutLink').style.display = 'flex';
+    document.getElementById('i-analyseBtn').disabled = true;
+    document.getElementById('i-loader').classList.add('active');
+    document.getElementById('i-result').classList.remove('active');
+
+    const staatLabels = {goed:'Goed (weinig gebreken, nette staat)', gemiddeld:'Gemiddeld (normale slijtage, paar kleine defecten)', slecht:'Slecht (zichtbare schade, mechanische problemen)'};
+    const voertuig = `${merk} ${model}${uitvoering?' '+uitvoering:''}, bouwjaar ${jaar}, ${parseInt(km).toLocaleString('nl-BE')} km${brandstof?', brandstof: '+brandstof:''}${transmissie?', transmissie: '+transmissie:''}`;
+
+    const prompt = `Je bent een expert Belgische automarkt analist. Autohandelaar Bass Motors wil een inruilwagen overnemen van een klant.
+
+INRUILWAGEN: ${voertuig}
+STAAT VAN DE WAGEN: ${staatLabels[staat]}
+GEWENSTE WINSTMARGE BIJ DOORVERKOOP: ${marge}%
+
+De handelaar wil weten hoeveel hij maximaal kan bieden als inruilprijs zodat hij:
+1. De klant kan overtuigen (eerlijk en marktconform bod)
+2. De wagen nog rendabel kan doorverkopen met ${marge}% marge
+
+Analyseer in het NEDERLANDS:
+1. MARKTWAARDE: realistische verkoopwaarde op Belgische tweedehandsmarkt in staat "${staat}" (min, gemiddeld, max)
+2. KOSTENRAMING: geschatte kosten voor keuring + opkuis + herstel afhankelijk van staat (goed ~€500, gemiddeld ~€900, slecht ~€1500+)
+3. INRUILBOD BEREKENING:
+   - Aanbevolen bod: het bedrag dat de handelaar aan de klant kan bieden (marktwaarde - kosten - gewenste marge). Psychologisch aantrekkelijk getal (gebruik .000 of .500 prijzen voor inruil)
+   - Maximum bod: absoluut maximum dat de handelaar kan bieden zonder verlies
+   - Doorverkoopprijs advies: waarvoor zet hij de wagen daarna te koop?
+4. KLANT OVERTUIGING: 1 concrete tip hoe de handelaar dit bod aan de klant uitlegt zodat de klant akkoord gaat
+5. RISICO'S: 1-2 aandachtspunten specifiek voor dit voertuig of deze staat
+
+Begin met ENKEL dit JSON-blok:
+{"marktMin":GETAL,"marktGem":GETAL,"marktMax":GETAL,"kosten":GETAL,"bod":GETAL,"maxBod":GETAL,"doorverkoop":GETAL,"tip":"TIP TEKST"}
+Daarna de analyse als tekst.`;
+
+    try {
+      const fullText = await callAI(prompt);
+      const d = parseJSON(fullText);
+      const analyseText = fullText.replace(/\{[\s\S]*?\}/, '').trim();
+      document.getElementById('i-loader').classList.remove('active');
+      if (d) {
+        const winst = d.doorverkoop - d.bod - d.kosten;
+        const winstPct = ((winst/d.bod)*100).toFixed(1);
+
+        // Groot bod
+        document.getElementById('i-bod').textContent = eur(d.bod);
+        document.getElementById('i-bodSub').textContent = `Marktwaarde ~${eur(d.marktGem)} · Na kosten ${eur(d.kosten)} · Marge ${marge}%`;
+
+        // Metrics
+        document.getElementById('i-metMarkt').textContent = eur(d.marktGem);
+        document.getElementById('i-metMarktSub').textContent = `Range: ${eur(d.marktMin)} – ${eur(d.marktMax)}`;
+        document.getElementById('i-metKosten').textContent = eur(d.kosten);
+        document.getElementById('i-metKosten').className = 'metric-value orange';
+        document.getElementById('i-metWinst').textContent = eur(winst);
+        document.getElementById('i-metWinstSub').textContent = `${winstPct}% op investering`;
+        document.getElementById('i-metVerkoop').textContent = eur(d.doorverkoop);
+
+        // Prijsladder
+        document.getElementById('i-ladderMarkt').textContent = eur(d.marktGem);
+        document.getElementById('i-ladderBod').textContent = eur(d.bod);
+        document.getElementById('i-ladderMax').textContent = eur(d.maxBod);
+        document.getElementById('i-barBod').style.width = Math.round((d.bod/d.marktGem)*100)+'%';
+        document.getElementById('i-barMax').style.width = Math.round((d.maxBod/d.marktGem)*100)+'%';
+
+        if (d.tip) document.getElementById('i-tip').innerHTML = `<strong>💬 Hoe uitleggen aan klant:</strong> ${d.tip}`;
+      }
+      document.getElementById('i-aiAnalyse').textContent = analyseText;
+      document.getElementById('i-scoutUrlResult').textContent = `AutoScout24 — ${merk} ${model} (${jaar})`;
+      document.getElementById('i-scoutLinkResult').href = scoutUrl;
+      document.getElementById('i-result').classList.add('active');
+    } catch(err) {
+      document.getElementById('i-loader').classList.remove('active');
+      errBox.textContent = '⚠️ Fout: ' + err.message; errBox.classList.add('active');
+    }
+    document.getElementById('i-analyseBtn').disabled = false;
+  }
+
+  function resetInruil() {
+    document.getElementById('i-result').classList.remove('active');
+    document.getElementById('i-errorBox').classList.remove('active');
+    document.getElementById('i-scoutLink').style.display = 'none';
+    document.getElementById('i-analyseBtn').disabled = false;
   }
 </script>
 </body>
