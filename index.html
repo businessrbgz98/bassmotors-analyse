@@ -329,13 +329,14 @@
 
   // ---- HELPERS ----
   function buildScoutUrl(merk, model, jaar, km, brandstof, transmissie) {
-    const base = 'https://www.autoscout24.be/lst';
     const jaarMin = Math.max(parseInt(jaar)-1, 2000), jaarMax = parseInt(jaar)+1;
     const kmMax = Math.round(parseInt(km)*1.3);
-    let url = `${base}/${merk.toLowerCase().replace(/\s+/g,'-')}/${model.toLowerCase().replace(/\s+/g,'-')}?fregfrom=${jaarMin}&fregto=${jaarMax}&kmto=${kmMax}&cy=B&atype=C`;
+    const merkSlug = encodeURIComponent(merk.toLowerCase().replace(/\s+/g,'-'));
+    const modelSlug = encodeURIComponent(model.toLowerCase().replace(/\s+/g,'-'));
+    let url = `https://www.autoscout24.be/nl/lst/${merkSlug}/${modelSlug}?fregfrom=${jaarMin}&fregto=${jaarMax}&kmto=${kmMax}&cy=B&atype=C`;
     if (brandstof) url += `&fuel=${brandstof}`;
     if (transmissie) url += `&gear=${transmissie}`;
-    return url + '&sort=standard&desc=0&ustate=N%2CU';
+    return url + '&sort=price&desc=0&ustate=N%2CU';
   }
   function eur(val) { return '€' + Math.round(val).toLocaleString('nl-BE'); }
   async function callAI(prompt) {
