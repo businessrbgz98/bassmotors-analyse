@@ -505,19 +505,25 @@ De handelaar moet concurrentieel kunnen doorverkopen. Baseer de marktwaarde op d
 
 REKENREGEL:
   Doorverkoopprijs = laagste marktprijs (marktMin)
-  Bod = Doorverkoopprijs - Kosten - (Doorverkoopprijs × ${marge}%)
+  Bod = (Doorverkoopprijs - Kosten) / (1 + marge% / 100)
+  Winst = Doorverkoopprijs - Bod - Kosten
   Het bod moet ALTIJD lager zijn dan marktMin.
 
 Voorbeeld: laagste marktprijs €7.500, kosten €650, marge 20%
-  Bod = €7.500 - €650 - (€7.500 × 20%) = €7.500 - €650 - €1.500 = €5.350
+  Bod = (€7.500 - €650) / 1.20 = €6.850 / 1.20 = €5.708
+  Winst = €7.500 - €5.708 - €650 = €1.142 = 20% van (bod + kosten)
+
+Voorbeeld marge 50%: laagste marktprijs €7.500, kosten €650
+  Bod = (€7.500 - €650) / 1.50 = €6.850 / 1.50 = €4.567
+  Winst = €7.500 - €4.567 - €650 = €2.283 = 50% van (bod + kosten)
 
 Analyseer in het NEDERLANDS:
 1. MARKTWAARDE: prijsrange voor dit voertuig in staat "${staat}" — geef de LAAGSTE prijzen die realistisch zijn (min, gemiddeld, max)
 2. KOSTENRAMING: keuring + opkuis + herstel voor staat "${staat}" (goed ~€500, gemiddeld ~€900, slecht ~€1.500+)
 3. INRUILBOD (gebruik bovenstaande formule met marktMin als basis):
-   - Bod = marktMin - kosten - (marktMin × ${marge/100})
+   - Bod = (marktMin - kosten) / (1 + ${marge} / 100) — afgerond naar beneden op psychologisch getal
    - Rond af naar beneden op psychologisch getal (€4.500, €7.000 etc.)
-   - Maximum bod = marktMin - kosten - minimale marge 10%
+   - Maximum bod = (marktMin - kosten) / (1 + 10 / 100)
    - Doorverkoopprijs = marktMin (laagste marktprijs, zo kan handelaar zeker verkopen)
 4. HOE UITLEGGEN AAN KLANT: 1 concrete zin om het bod te verantwoorden
 5. RISICO'S: 1-2 aandachtspunten voor dit voertuig
@@ -533,10 +539,14 @@ Daarna de analyse als tekst.`
       document.getElementById('i-loader').classList.remove('active');
       if (d) {
         const winst = d.doorverkoop - d.bod - d.kosten;
-        const winstPct = ((winst/d.marktGem)*100).toFixed(1); // winst tov marktwaarde
-        // Veiligheidscheck: bod mag nooit boven laagste marktprijs zitten
-        if (d.bod >= d.marktMin) { d.bod = Math.round(d.marktMin * 0.75 / 500) * 500; }
-        if (d.doorverkoop > d.marktMin) { d.doorverkoop = d.marktMin; }
+        const winstPct = ((winst / (d.bod + d.kosten)) * 100).toFixed(1); // correcte marge op kostprijs
+        // Veiligheidscheck met correcte formule
+        const kosten = d.kosten || 650;
+        const correctBod = Math.floor(((d.marktMin - kosten) / (1 + marge / 100)) / 500) * 500;
+        const correctMaxBod = Math.floor(((d.marktMin - kosten) / 1.10) / 500) * 500;
+        if (!d.bod || d.bod >= d.marktMin) { d.bod = correctBod; }
+        if (!d.maxBod || d.maxBod >= d.marktMin) { d.maxBod = correctMaxBod; }
+        if (!d.doorverkoop || d.doorverkoop > d.marktMin) { d.doorverkoop = d.marktMin; }
 
         // Groot bod
         document.getElementById('i-bod').textContent = eur(d.bod);
